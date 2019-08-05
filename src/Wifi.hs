@@ -1,5 +1,7 @@
 module Wifi where
 
+import System.Process
+
 data WifiSpot = WifiSpot { name :: String, 
                            strength :: Int
                          } deriving (Eq, Show)
@@ -14,3 +16,10 @@ instance Read WifiSpot where
           strength = read $ tail $ dropWhile (/= ':') input
        in [(WifiSpot name strength, "")]
 
+
+connectWifi :: String -> String -> IO (Either Bool String)
+connectWifi ssid password = do
+         (exitCode, std_out, std_err) <- readProcessWithExitCode "nmcli" ["device", "wifi", "connect", ssid, "password", password] []
+         putStrLn std_out
+         if length std_err == 0 then return $ Left True
+         else return $ Right std_out
