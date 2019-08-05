@@ -3,6 +3,7 @@ module Main where
 import System.Process
 import System.Console.StructuredCLI
 
+import System.Exit                   
 import Control.Monad                 (void)
 import Control.Monad.IO.Class        (liftIO)
 import Data.Default                  (def)
@@ -13,22 +14,26 @@ getWifi = map read
 
 root :: Commands ()
 root = do
-  world >+ do
-    hello
-    bye
-    command "exit" "return to previous level" exit
+  list 
+  hello
+  list
+  command "exit" "return to previous level" $ do 
+            exitSuccess
+            return NoAction
+  
 
-world :: Commands ()
-world = command "world" "enter into the world" $ return NewLevel
+wifi :: Commands ()
+wifi = command "wifi" "to access the wifi menu" $ return NewLevel
 
 hello :: Commands ()
 hello = command "hello" "prints a greeting" $ do
           liftIO . putStrLn $ "Hello world!"
           return NoAction
 
-bye :: Commands ()
-bye = command "bye" "say goodbye" $ do
-        liftIO . putStrLn $ "Sayonara!"
+list :: Commands ()
+list = command "list" "list avaliable wifis" $ do
+        wifiList <- readProcess "nmcli" ["-g", "SSID,SIGNAL", "device", "wifi", "list", "--rescan", "auto"] []
+        liftIO . putStrLn $ unlines $ map show $ getWifi $ lines wifiList
         return NoAction
 
 
