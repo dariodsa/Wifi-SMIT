@@ -22,9 +22,11 @@ getWifi = map read
 
 root :: Commands ()
 root = do
+  command "off" "turn wifi off" $ turnWifi "off"
+  command "on"  "turn wifi on"  $ turnWifi "on"
   list 
   connect
-  command "exit" "return to previous level" $ do 
+  command "exit" "exit the program" $ do 
             exitSuccess
             return NoAction
   

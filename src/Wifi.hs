@@ -1,6 +1,7 @@
 module Wifi where
 
 import System.Process
+import System.Console.StructuredCLI
 
 data WifiSpot = WifiSpot { name :: String, 
                            strength :: Int
@@ -23,3 +24,10 @@ connectWifi ssid password = do
          putStrLn std_out
          if length std_err == 0 then return $ Left True
          else return $ Right std_out
+
+--turnWifi :: Bool -> Commands ()
+turnWifi status = do 
+           (exitCode, std_out, std_err) <- readProcessWithExitCode "nmcli" ["radio", "wifi", status] []
+           putStrLn $ "Wifi turned " ++ status ++"."
+           return NoAction
+        
