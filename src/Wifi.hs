@@ -5,7 +5,10 @@ import System.Console.StructuredCLI
 
 data WifiSpot = WifiSpot { name :: String, 
                            strength :: Int
-                         } deriving (Eq, Show)
+                         } deriving (Eq)
+
+instance Show WifiSpot where
+   show (WifiSpot name strength) = name ++ ", strength:" ++ (show strength)
 
 instance Ord WifiSpot where
     (<)  (WifiSpot _ s1) (WifiSpot _ s2) = s1 < s2
